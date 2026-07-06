@@ -1,92 +1,47 @@
-# Obsidian Sample Plugin
+# obsidian-imgbed
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+将 Obsidian 当前文档中的本地图片上传到 CloudFlare ImgBed 图床，并替换为远程 Markdown 图片链接。
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## 功能
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
+- 上传 Markdown 图片链接，例如 `![alt](path/to/image.png)`。
+- 上传 Obsidian 图片嵌入，例如 `![[image.png]]`。
+- 粘贴图片时自动上传，并插入远程 Markdown 图片链接。
+- 配置图床地址、认证方式、上传渠道、渠道名称、上传目录、文件命名方式、压缩和重试行为。
+- 选中图片链接，或将光标放在图片链接上，即可删除图床中的文件。
 
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and outputs a Notice on click.
-- Registers a global interval which logs 'setInterval' to the console.
+## 命令
 
-## First time developing plugins?
+- **上传当前文档中的本地图片**
+- **删除图床图片**
 
-Quick starting guide for new plugin devs:
+## 设置
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `src/main.ts` to `main.js`.
-- Make changes to `src/main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+- **图床地址**：你的 CloudFlare ImgBed 部署地址，例如 `https://cfbed.sanyue.de`。
+- **认证方式**：
+  - **API_TOKEN**：推荐使用。上传需要 `upload` 权限，删除需要 `delete` 权限。
+  - **上传认证码**：仅支持上传。
+- **上传渠道**：`telegram`、`cfr2`、`s3`、`discord`、`huggingface` 或 `webdav`。
+- **渠道名称**：可选。多渠道部署时填写。
+- **上传目录**：可选相对目录，例如 `img/notes`。
+- **文件命名方式**：`default`、`index`、`origin` 或 `short`。
+- **粘贴图片时自动上传**：粘贴图片文件时立即上传，而不是创建本地附件。
 
-## Releasing new releases
+## 隐私
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+插件只会把你明确上传的图片文件发送到配置的 CloudFlare ImgBed 服务，不收集遥测数据，也不会发送笔记正文或其他库数据。
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+删除图片时，插件会把解析出的图床文件路径发送到配置的图床服务。
 
-## Adding your plugin to the community plugin list
+## 开发
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v18 (`node --version`).
-- `npm i` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-	"fundingUrl": "https://buymeacoffee.com"
-}
+```bash
+npm install
+npm run dev
 ```
 
-If you have multiple URLs, you can also do:
+生产构建：
 
-```json
-{
-	"fundingUrl": {
-		"Buy Me a Coffee": "https://buymeacoffee.com",
-		"GitHub Sponsor": "https://github.com/sponsors",
-		"Patreon": "https://www.patreon.com/"
-	}
-}
+```bash
+npm run build
 ```
-
-## API Documentation
-
-See https://docs.obsidian.md
