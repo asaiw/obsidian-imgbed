@@ -171,19 +171,18 @@ export function extractFileIdFromRemoteUrl(settings: ImgBedSettings, url: string
 		return decodeURIComponent(trimmedUrl.slice('/file/'.length));
 	}
 
+	if (trimmedUrl.startsWith('/')) {
+		return decodeURIComponent(trimmedUrl.replace(/^\/+/, ''));
+	}
+
 	try {
 		const parsedUrl = new URL(trimmedUrl);
-		const baseUrl = new URL(normalizeBaseUrl(settings.baseUrl));
-		if (parsedUrl.origin !== baseUrl.origin) {
-			return null;
-		}
-
 		const prefix = '/file/';
-		if (!parsedUrl.pathname.startsWith(prefix)) {
-			return null;
+		if (parsedUrl.pathname.startsWith(prefix)) {
+			return decodeURIComponent(parsedUrl.pathname.slice(prefix.length));
 		}
 
-		return decodeURIComponent(parsedUrl.pathname.slice(prefix.length));
+		return decodeURIComponent(parsedUrl.pathname.replace(/^\/+/, ''));
 	} catch {
 		return null;
 	}
